@@ -5,8 +5,7 @@ def match(men,women,pref):
 	men=[1,3,5]
 	women=[2,4,6]
 	pref={1:[6,4,2],2:[3,5,1],3:[2,6,4],4:[5,1,3],5:[6,4,2],6:[1,5,3]}
-  '''
-  
+	'''
 	freemen=[]
 	for m in men:
 		freemen.append(m)
@@ -28,9 +27,8 @@ def match(men,women,pref):
 		for m in pref[w]:
 			inverse[w][m]=n
 			n+=1
-
 	while freemen:
-		m=freemen.pop()
+		m=freemen.pop(0)
 		if proposal[m]<len(women):
 			# do proposal
 			p=proposal[m]
@@ -48,7 +46,8 @@ def match(men,women,pref):
 				freemen.append(currenthusband)
 			else:
 				# w rejects m
-				None#print w,"rejects",m
+				#print w,"rejects",m
+				freemen.append(m)
 
 		else:
 			# has proposed to every women
@@ -96,6 +95,6 @@ def read_input(fileName):
 if __name__=='__main__':
 	fileName=sys.argv[1]
 	men,women,pref=read_input(fileName)
-	wife=match(men.keys(),women.keys(),pref)
-	for m in men.keys():
+	wife=match(sorted(men.keys()),sorted(women.keys()),pref)
+	for m in sorted(men.keys()):
 		print men[m],'--',women[wife[m]]
