@@ -1,3 +1,4 @@
+import sys
 def bfs(G,source,destination):
   path={}
   Q=[]
@@ -21,12 +22,14 @@ def build_graph(dataFile):
   G={}
   f=open(dataFile,'r')
   for row in f:
-    ls.append(row)
+    ls.append(row.strip())
   
   for word in ls:
     G[word]=[]
     last4=word[1:]
-    for w in ls:  
+    for w in ls:
+      if word==w:
+         continue  
       if exists(last4,w):
          G[word].append(w)
 
@@ -43,15 +46,17 @@ def exists(last4,word):
   return True
 
 if __name__=='__main__':
-   G={'grass':['stars'],'stars':['parts','start'],'parts':['stars','start'],'start':[]}
-   source='parts'
-   destination='grass'
+   #G={'grass':['stars'],'stars':['parts','start'],'parts':['stars','start'],'start':[]}
+   datafile=sys.argv[1]
+   testin=open(sys.argv[2],'r')
+   G=build_graph(datafile)
+   for line in testin:
+      line=line.strip().split()
+      source=line[0]
+      destination=line[1]
+      distance=bfs(G,source,destination)
+      print distance
+   #source='parts'
+   #destination='grass'
    #distance=bfs(G,source,destination)
-   #print distance
-   '''
-   if exists('here','where'):
-     print 'Yes'
-   else:
-     print 'No'
-   '''
-   print build_graph('data/words-10.dat')
+   
