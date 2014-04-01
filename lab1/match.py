@@ -96,5 +96,25 @@ if __name__=='__main__':
 	fileName=sys.argv[1]
 	men,women,pref=read_input(fileName)
 	wife=match(sorted(men.keys()),sorted(women.keys()),pref)
-	for m in sorted(men.keys()):
-		print men[m],'--',women[wife[m]]
+	ls=[]
+        for m in sorted(men.keys()):
+            s= men[m]+' -- '+ women[wife[m]]
+            ls.append(s)
+            print s
+        correctfile=fileName.replace('.in','.out')
+        f=open(correctfile,'r')
+        i=0
+        wrong=0
+        for line in f:
+          line=line.strip()
+	  if i<len(ls): 
+            if line==ls[i]:
+               None
+	    else :
+                wrong=1
+                print 'not equal'
+          else:
+             break
+          i+=1
+	if wrong==0:
+           print 'equal'
