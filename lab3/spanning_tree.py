@@ -2,7 +2,9 @@ import random
 def span(G):
 	V=G.keys()
 	seed=random.choice(V)
-	Vnew=['A']#Vnew.append(seed)
+	Vnew=[]
+	#Vnew=['A']
+	Vnew.append(seed)
 	Enew=[]
 	while len(Vnew)<len(V):
 		min=['',1000000]
