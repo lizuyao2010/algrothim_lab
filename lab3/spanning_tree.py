@@ -7,7 +7,7 @@ def span(G):
 	Vnew.append(seed)
 	Enew=[]
 	while len(Vnew)<len(V):
-		min=['',1000000]
+		min=['',float("inf")]
 		for vnew in Vnew:
 			for to in G[vnew].keys():
 				if to not in Vnew:
