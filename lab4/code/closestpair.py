@@ -8,7 +8,7 @@ def parser(input):
 	pl=[]
 	for line in fin:
 		line=line.strip()
-		if line=='EOF':
+		if line=='EOF' or line=='':
 			break
 		if line=='NODE_COORD_SECTION':
 			flag=True
@@ -51,8 +51,17 @@ def distance(p1,p2):
 	return math.sqrt((p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1]))
 
 if __name__ == '__main__':
-	pl=parser(sys.argv[1])
-	pointListx = sorted(pl, key=itemgetter(0))
-	pointListy = sorted(pl, key=itemgetter(1))
-	d=divide_conqure(pointListx,pointListy)
-	print sys.argv[1]+':',len(pl),d
+	
+	fin=open(sys.argv[1],'r')
+	for line in fin:
+		line=line.strip()
+		if line=='':
+			break
+		line=line.split(':')
+		filein=line[0]
+		pl=parser(filein)
+		pointListx = sorted(pl, key=itemgetter(0))
+		pointListy = sorted(pl, key=itemgetter(1))
+		d=divide_conqure(pointListx,pointListy)
+		print filein+':',len(pl),d
+	
