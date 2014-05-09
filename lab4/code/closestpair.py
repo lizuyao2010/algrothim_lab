@@ -1,23 +1,22 @@
 #-*- coding: utf-8 -*-
 from operator import itemgetter
 import math
-def divide_conqure(Plx,Ply):
-	print Plx
-	size=len(Plx)
+def divide_conqure(pointListx,pointListy):
+	size=len(pointListx)
 	if size==2:
-		return distance(Plx[0],Plx[1])
+		return distance(pointListx[0],pointListx[1])
 	if size==1:
 		return float("inf")
-	Plx1=Plx[0:size/2]
-	Plx2=Plx[size/2:size]
-	Ply1=sorted(Plx1,key=itemgetter(1))
-	Ply2=sorted(Plx2,key=itemgetter(1))
-	d1=divide_conqure(Plx1,Ply1)
-	d2=divide_conqure(Plx2,Ply2)
+	pointListx1=pointListx[0:size/2]
+	pointListx2=pointListx[size/2:size]
+	pointListy1=sorted(pointListx1,key=itemgetter(1))
+	pointListy2=sorted(pointListx2,key=itemgetter(1))
+	d1=divide_conqure(pointListx1,pointListy1)
+	d2=divide_conqure(pointListx2,pointListy2)
 	d = min(d1,d2)
-	L = (Plx[size/2-1][0]+Plx[size/2][0])/2.0
+	L = (pointListx[size/2-1][0]+pointListx[size/2][0])/2.0
 	region=[]
-	for point in Ply:
+	for point in pointListy:
 		x=point[0]
 		if x>= L-d and x<= L+d:
 			region.append(point)
@@ -40,7 +39,7 @@ if __name__ == '__main__':
 	pl.append((-20,0))
 	pl.append((20,2))
 	pl.append((20,0))
-	Plx = sorted(pl, key=itemgetter(0))
-	Ply = sorted(pl, key=itemgetter(1))
-	d=divide_conqure(Plx,Ply)
+	pointListx = sorted(pl, key=itemgetter(0))
+	pointListy = sorted(pl, key=itemgetter(1))
+	d=divide_conqure(pointListx,pointListy)
 	print d
