@@ -1,6 +1,25 @@
 #-*- coding: utf-8 -*-
 from operator import itemgetter
 import math
+
+def parser(input):
+	fin=open(input,'r')
+	flag=False
+	pl=[]
+	for line in fin:
+		line=line.strip()
+		if line=='EOF':
+			break
+		if line=='NODE_COORD_SECTION':
+			flag=True
+			continue
+		if flag==True:
+			line=line.split()
+			x=float(line[1].strip())
+			y=float(line[2].strip())
+			pl.append((x,y))
+	return pl
+
 def divide_conqure(pointListx,pointListy):
 	size=len(pointListx)
 	if size==2:
@@ -32,6 +51,7 @@ def distance(p1,p2):
 	return math.sqrt((p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1]))
 
 if __name__ == '__main__':
+	'''
 	pl=[]
 	pl.append((0.25,2))
 	pl.append((-0.25,2))
@@ -39,6 +59,8 @@ if __name__ == '__main__':
 	pl.append((-20,0))
 	pl.append((20,2))
 	pl.append((20,0))
+	'''
+	pl=parser('../data/att532.tsp')
 	pointListx = sorted(pl, key=itemgetter(0))
 	pointListy = sorted(pl, key=itemgetter(1))
 	d=divide_conqure(pointListx,pointListy)
