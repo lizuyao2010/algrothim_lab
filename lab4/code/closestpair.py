@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from operator import itemgetter
-import math
+import math,sys
 
 def parser(input):
 	fin=open(input,'r')
@@ -51,17 +51,8 @@ def distance(p1,p2):
 	return math.sqrt((p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1]))
 
 if __name__ == '__main__':
-	'''
-	pl=[]
-	pl.append((0.25,2))
-	pl.append((-0.25,2))
-	pl.append((-20,1))
-	pl.append((-20,0))
-	pl.append((20,2))
-	pl.append((20,0))
-	'''
-	pl=parser('../data/att532.tsp')
+	pl=parser(sys.argv[1])
 	pointListx = sorted(pl, key=itemgetter(0))
 	pointListy = sorted(pl, key=itemgetter(1))
 	d=divide_conqure(pointListx,pointListy)
-	print d
+	print sys.argv[1]+':',len(pl),d
