@@ -28,12 +28,24 @@ def divide_conqure(pointListx,pointListy):
 		return float("inf")
 	pointListx1=pointListx[0:size/2]
 	pointListx2=pointListx[size/2:size]
+	L = (pointListx[size/2-1][0]+pointListx[size/2][0])/2.0
+	'''
+	pointListy1=[]
+	pointListy2=[]
+	for point in pointListy:
+		x=point[0]
+		if x < L:
+			pointListy1.append(point)
+		else:
+			pointListy2.append(point)
+	'''
+	
 	pointListy1=sorted(pointListx1,key=itemgetter(1))
 	pointListy2=sorted(pointListx2,key=itemgetter(1))
+	
 	d1=divide_conqure(pointListx1,pointListy1)
 	d2=divide_conqure(pointListx2,pointListy2)
 	d = min(d1,d2)
-	L = (pointListx[size/2-1][0]+pointListx[size/2][0])/2.0
 	region=[]
 	for point in pointListy:
 		x=point[0]
