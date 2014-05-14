@@ -8,6 +8,7 @@ def sequece_alignment(x,y,header,matrix):
 		for j in range(len(y)+1):
 			row.append(0)
 		Fun.append(row)
+
 	for i in range(len(x)+1):
 		Fun[i][0]=-4*i
 		if i-1>=0:
@@ -16,6 +17,7 @@ def sequece_alignment(x,y,header,matrix):
 		Fun[0][j]=-4*j
 		if j-1>=0:
 			path[(0,j)]=path[(0,j-1)]+[('-',y[j-1])]
+	
 	for i in range(1,len(x)+1):
 		for j in range(1,len(y)+1):
 			index_xi=header[x[i-1]]
