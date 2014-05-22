@@ -92,7 +92,7 @@ class FlowNetwork(object):
 				self.flow[edge]+=flow
 				self.flow[edge.redge]-=flow
 			path=self.find_path(source,sink,[])
-			#print sum(self.flow[edge] for edge in self.get_edges('s'))
+			print sum(self.flow[edge] for edge in self.get_edges(0))
 		return sum(self.flow[edge] for edge in self.get_edges(source))
 
 
@@ -110,6 +110,8 @@ if __name__=='__main__':
             w=float("inf")
         g.add_edge(u,v,w)
     print g.max_flow(0,54)
+    for edge in g.min_cut(0):
+        print edge
     '''
     g = FlowNetwork()
     for v in 'sopqrt':
