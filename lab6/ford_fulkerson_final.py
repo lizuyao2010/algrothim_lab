@@ -66,44 +66,42 @@ class FlowNetwork(object):
 
 
 	def find_path_bfs(self,source,sink):
-            queue=[]
+                queue=[]
 	    visited=[]
 	    path={}
 	    queue.append(source)
-            visited.append(source)
-            path[source]=[]
 	    while queue:
 	    	v=queue.pop(0)
-            	if v == sink:
-                	return path[v]
+	    	visited.append(v)
 	    	edges=self.get_edges(v)
 	    	for edge in edges:
 	    		residual=edge.capacity-self.flow[edge]
 	    		if residual>0 and edge.sink not in visited:
 	    			queue.append(edge.sink)
-                                visited.append(edge.sink)
 				if not path.has_key(edge.sink):
 					path[edge.sink]=[]
-				path[edge.sink]=path[edge.source]+[edge]
+				path[edge.sink]+=[edge]
+				if edge.sink==sink:
+					return path[edge.sink]
 	    return None
 
     
 	def max_flow(self,source,sink):
-		path=self.find_path_bfs(source,sink)
+		path=self.find_path(source,sink,set())
 		while path!=None:
 			residuals=[edge.capacity-self.flow[edge] for edge in path]
 			flow = min(residuals)
 			for edge in path:
 				self.flow[edge]+=flow
 				self.flow[edge.redge]-=flow
-			path=self.find_path_bfs(source,sink)
+			path=self.find_path(source,sink,set())
 			#print path
-			#print sum(self.flow[edge] for edge in self.get_edges(0))
+			print sum(self.flow[edge] for edge in self.get_edges(0))
 		return sum(self.flow[edge] for edge in self.get_edges(source))
 
 
 if __name__=='__main__':
-    
+    '''
     f = open('rail.txt','r')
     g = FlowNetwork()
     for v in range(55):
@@ -117,10 +115,7 @@ if __name__=='__main__':
             w=float("inf")
         g.add_edge(u,v,w)
     print g.max_flow(0,54)
-    s=set()
     for edge in g.min_cut(0):
-        s.add(edge)
-    for edge in s:
         print edge
     '''
     g = FlowNetwork()

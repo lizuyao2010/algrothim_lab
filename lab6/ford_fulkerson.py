@@ -1,72 +1,144 @@
-def ford_fulkerson(G,s,t):
-    #Gf=redisdualgraph(G)
-    #(id,flow,residual)
-    Gf=G
-    path = find_path(Gf,s,t) 
-    print Gf  
-    while path:
-    	print path
-        Gf=augment(path,Gf)
-        print Gf
-        path = find_path(Gf,s,t)
 
-    print Gf
+class Edge(object):
+	def __init__(self,u,v,w):
+		self.source=u
+		self.sink=v
+		self.capacity=w
+	def __repr__(self):
+		return "%s->%s:%s" % (self.source,self.sink,self.capacity)
 
-def update(node1,node2,minresidual,Gf):
-	index=0
-	for edge in Gf[node1]:
-		if edge[0]==node2:
-			edge[1]+=minresidual
-			edge[2]-=minresidual
-			Gf[node1][index]=[edge[0],edge[1],edge[2]]
-		index+=1
-	return Gf
+class FlowNetwork(object):
+	def __init__(self):
+		self.adj={}
+		self.flow={}
 
-def augment(path,Gf):
-    minresidual = path[1][1]
-    for i in range(2,len(path)):
-        if path[i][1]< minresidual:
-        	minresidual=path[i][1]
+	def add_vertex(self, vertex):
+		self.adj[vertex]=[]
 
-    for i in range(len(path)):
-    	if i+1<=len(path)-1:
-    		Gf=update(path[i][0],path[i+1][0],minresidual,Gf)
+	def get_edges(self,v):
+		return self.adj[v]
 
-    return Gf
-        
+	def add_edge(self,u,v,w=0):
+		if u==v:
+			raise ValueError("u"=="v")
+		edge=Edge(u,v,w)
+		redge=Edge(v,u,w)
+		edge.redge=redge
+		redge.redge=edge
+		self.adj[u].append(edge)
+		self.adj[v].append(redge)
+		self.flow[edge]=0
+		self.flow[redge]=0
 
-def find_path(graph, start, end, path=[],edgelen=0):
-    path = path + [(start,edgelen)]
-    if start == end:
-        return path
-    if not graph.has_key(start):
-        return None
-    for node in graph[start]:
-        if node[0] not in path and node[2]>0:
-            newpath = find_path(graph, node[0], end, path, node[2])
-            if newpath: return newpath
-    return None
+	def find_path(self,source,sink,path):
+		if source == sink:
+			return path
+		edges=self.get_edges(source)
+		for edge in edges:
+			residual=edge.capacity-self.flow[edge]
+			if (residual>0) and (edge not in path):
+				newpath=self.find_path(edge.sink,sink, path.union(set([edge])))
+				if newpath != None:
+					return newpath
+		return None
 
-def redisdualgraph(graph):
-    G=dict()
-    for key in graph.keys():
-        G[key]=[]
-    for key in graph.keys():
-        values=graph[key]
-        for value in values:
-            #(id,residual)
-            G[key].append((value[0],value[2]))
-            #(key,flow)
-            G[value[0]].append((key,value[1]))
-    return G
+	def min_cut(self,source):
+		queue=[]
+		visited=[]
+		queue.append(source)
+		while queue:
+			v=queue.pop(0)
+			visited.append(v)
+			edges=self.get_edges(v)
+			for edge in edges:
+				residual=edge.capacity-self.flow[edge]
+				if residual>0 and edge.sink not in visited:
+					queue.append(edge.sink)
+		mincut=[]
+		for v in visited:
+			edges=self.get_edges(v)
+			for edge in edges:
+				if edge.sink not in visited and edge.capacity>0:
+					mincut.append(edge)
+		return mincut
+
+
+	def find_path_bfs(self,source,sink):
+            queue=[]
+	    visited=[]
+	    path={}
+	    queue.append(source)
+            visited.append(source)
+            path[source]=[]
+	    while queue:
+	    	v=queue.pop(0)
+            	if v == sink:
+                	return path[v]
+	    	edges=self.get_edges(v)
+	    	for edge in edges:
+	    		residual=edge.capacity-self.flow[edge]
+	    		if residual>0 and edge.sink not in visited:
+	    			queue.append(edge.sink)
+                                visited.append(edge.sink)
+				if not path.has_key(edge.sink):
+					path[edge.sink]=[]
+				path[edge.sink]=path[edge.source]+[edge]
+	    return None
+
+    
+	def max_flow(self,source,sink):
+		path=self.find_path_bfs(source,sink)
+		while path!=None:
+			residuals=[edge.capacity-self.flow[edge] for edge in path]
+			flow = min(residuals)
+			for edge in path:
+				self.flow[edge]+=flow
+				self.flow[edge.redge]-=flow
+			path=self.find_path_bfs(source,sink)
+			#print path
+			#print sum(self.flow[edge] for edge in self.get_edges(0))
+		return sum(self.flow[edge] for edge in self.get_edges(source))
+
 
 if __name__=='__main__':
-    # (id,flow,capcity)
-    graph = {1: [[2,0,10],[3,0,10]],
-             2: [[3,0,2],[4,0,4],[5,0,8]],
-             3: [[5,0,9]],
-             4: [[6,0,10]],
-             5: [[4,0,6],[6,0,10]],
-             6: []}
     
-    ford_fulkerson(graph,1,6)
+    f = open('rail.txt','r')
+    g = FlowNetwork()
+    for v in range(55):
+        g.add_vertex(v)
+    for line in f:
+        line=line.strip().split()
+        u=int(line[0])
+        v=int(line[1])
+        w=int(line[2])
+        if w==-1:
+            w=float("inf")
+        g.add_edge(u,v,w)
+    print g.max_flow(0,54)
+    for edge in set(g.min_cut(0)):
+        print edge
+    '''
+    s=set()
+    for edge in g.min_cut(0):
+        s.add(edge)
+    for edge in s:
+        print edge
+    
+    g = FlowNetwork()
+    for v in 'sopqrt':
+        g.add_vertex(v)
+    g.add_edge('s','o',10)
+    g.add_edge('s','p',10)
+    g.add_edge('o','p',2)
+    g.add_edge('o','q',4)
+    g.add_edge('o','r',8)
+    g.add_edge('p','r',9)
+    g.add_edge('r','q',6)
+    g.add_edge('r','t',10)
+    g.add_edge('q','t',10)
+    print g.max_flow('s','t')
+    for edge in g.min_cut('s'):
+        print edge
+    #print g.find_path_bfs('s')
+    '''
+    
